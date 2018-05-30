@@ -3,7 +3,7 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
+from django.http import HttpResponse
 from rest_framework import generics
 from .serializers import ArticleSerializer
 
@@ -14,6 +14,14 @@ from .serializers import ArticleSerializer
 # class PartyDetail(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = Article.objects.all()
 #     serializer_class = ArticleSerializer
+
+def changeHeadImg(request):
+    article = Article.objects.filter(username=request.POST.get('username')).update(userphoto=request.FILES.get('userphoto'))
+    return HttpResponse("头像修改成功")
+
+def changeNickName(request):
+    article = Article.objects.filter(username=request.POST.get('username')).update(nickname=request.POST.get('nickname'))
+    return HttpResponse("昵称修改成功")
 
 class ArticleList(APIView):
     def get(self, request, format=None):
