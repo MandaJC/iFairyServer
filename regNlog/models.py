@@ -6,6 +6,7 @@ from django.db import models
 class Person(models.Model):
     username = models.CharField(max_length=30)
     password = models.CharField(max_length=50)
+    userphoto = models.ImageField(upload_to='imgs', default='images/q1.png')
     # img = models.ImageField(upload_to='img')
 
     # def __str__(self):

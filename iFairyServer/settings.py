@@ -25,7 +25,7 @@ SECRET_KEY = 'dbwgwyu*1qzou1$*3cd3+p4+gciq-**09zex-&xxc+ij_ud899'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['172.19.94.174', '127.0.0.1', '192.168.199.209', '172.19.90.1']
 
 
 # Application definition
@@ -37,8 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'regNlog',
     'rest_framework',
+    'regNlog',
+    'Article',
 ]
 
 MIDDLEWARE = [
@@ -123,4 +124,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_URL = '/static/'
+#api访问图片的关键！！！
+#参考，按照上面的复制即可https://blog.csdn.net/twilight041132/article/details/50570807
+MEDIA_ROOT = BASE_DIR + '/res/images/'
+ROOT_URL = '/'
+MEDIA_URL = ROOT_URL + 'res/images/'
+STATIC_URL = '/res/'
+
+STATICFILES_DIRS = (
+os.path.join(BASE_DIR, 'res'),
+)
