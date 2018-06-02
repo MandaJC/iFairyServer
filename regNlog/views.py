@@ -12,7 +12,10 @@ from rest_framework import status
 from rest_framework import generics
 from regNlog.serializers import PersonSerializer
 
-
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+from django.conf import settings
+import os
 # Create your views here.
 #注册
 def register(request):
@@ -59,7 +62,10 @@ def changePassword(request):
 
 def changeHeadImg(request):
     person = Person.objects.filter(username=request.POST.get('username')).update(userphoto=request.FILES.get('userphoto'))
-    return HttpResponse("头像修改成功")
+    image = request.FILES.get('userphoto')
+    path=default_storage.save('imgs/'+image.name, ContentFile(image.read()))
+    tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+    return HttpResponse("头像修改成功"+ str(image.size))
 
 def changeNickName(request):
     person = Person.objects.filter(username=request.POST.get('username')).update(nickname=request.POST.get('nickname'))
