@@ -16,6 +16,8 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
 import os
+
+from Article.models import Article
 # Create your views here.
 #注册
 def register(request):
@@ -65,10 +67,14 @@ def changeHeadImg(request):
     image = request.FILES.get('userphoto')
     path=default_storage.save('imgs/'+image.name, ContentFile(image.read()))
     tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+    article = Article.objects.filter(username=request.POST.get('username')).update(
+        userphoto=request.FILES.get('userphoto'))
     return HttpResponse("头像修改成功"+ str(image.size))
 
 def changeNickName(request):
     person = Person.objects.filter(username=request.POST.get('username')).update(nickname=request.POST.get('nickname'))
+    article = Article.objects.filter(username=request.POST.get('username')).update(
+        nickname=request.POST.get('nickname'))
     return HttpResponse("昵称修改成功")
 
 class PersonList(APIView):

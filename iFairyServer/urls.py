@@ -20,5 +20,6 @@ from django.conf.urls import include, url
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('regNlog/', include('regNlog.urls')),
-    path('Article/', include('Article.urls'))
+    path('Article/', include('Article.urls')),
+    path('Column/', include('Column.urls'))
 ]

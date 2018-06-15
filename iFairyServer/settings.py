@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'regNlog',
     'Article',
+    'Column'
 ]
 
 MIDDLEWARE = [
@@ -79,14 +80,19 @@ WSGI_APPLICATION = 'iFairyServer.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ifairy',
+        'NAME': 'ifairyserver',
         'HOST': 'localhost',
         'PORT': '3306',
         'USER': 'root',
         'PASSWORD': 'jkl;',
     }
 }
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators

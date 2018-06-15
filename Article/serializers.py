@@ -5,7 +5,7 @@ from .models import Article
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
-        fields = ('id', 'title', 'content', 'likenum', 'collectnum', 'username', 'nickname','userphoto', 'photo1', 'photo2', 'photo3')
+        fields = ('id', 'title', 'content', 'tag', 'tag2', 'tag3', 'relative', 'likenum', 'collectnum', 'username', 'nickname','userphoto', 'photo1', 'photo2', 'photo3', 'createdate')
     # title = serializers.CharField(max_length=50, default="未命名")
     # content = serializers.Text(default="文档待编辑...")  # 点击后才会显示
     # likenum = serializers.IntegerField(default=0)
