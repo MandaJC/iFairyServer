@@ -29,17 +29,43 @@ class Article(models.Model):
 class Like(models.Model):#点赞名单
     articleId = models.IntegerField(default=0)#id是从1开始的
     title = models.CharField(max_length=50, default="未命名")
-    username = models.CharField(max_length=30, default='user')#发表文章用户
-    likeuser = models.CharField(max_length=30, default='user')#点赞用户
+    username = models.CharField(max_length=30, default='')#发表文章用户
+    nickname = models.CharField(max_length=30, default='')
+    likeuser = models.CharField(max_length=30, default='')#点赞用户
 
     def __str__(self):
         return self.title
 
-class Collect(models.Model):#收藏名单
-    articleId = models.IntegerField(default=0)#id是从1开始的
-    title = models.CharField(max_length=50, default="未命名")
-    username = models.CharField(max_length=30, default='user')#发表文章用户
-    collectuser = models.CharField(max_length=30, default='user')#收藏文章用户
+class Collect(models.Model):#收藏名单 #没有头像
+    #articleId = models.IntegerField(default=0)#id是从1开始的
+    collectuser = models.CharField(max_length=30, default='')#收藏文章用户
+    article=models.ManyToManyField(Article, related_name='collect_article')#反向查询
+
+    def __str__(self):
+        return self.collectuser
+
+# class Collect(models.Model):#收藏名单 #没有头像
+#     articleId = models.IntegerField(default=0)#id是从1开始的
+#     title = models.CharField(max_length=50, default="未命名")
+#     username = models.CharField(max_length=30, default='')#发表文章用户
+#     nickname = models.CharField(max_length=30, default='')
+#     collectuser = models.CharField(max_length=30, default='')#收藏文章用户
+#
+#     def __str__(self):
+#         return self.title
+
+
+class Comment(models.Model):
+    articleId = models.IntegerField(default=0)  # id是从1开始的
+    # title = models.CharField(max_length=50, default="未命名")
+    # username = models.CharField(max_length=30, default='user')
+
+    comment = models.TextField(default="评论待编辑...")#评论内容
+    userphoto = models.ImageField(upload_to="imgs", default='images/q1.png')#评论人头像
+    commentuser = models.CharField(max_length=30, default='user')#评论人名字
+    nickname = models.CharField(max_length=30, default='匿名')#评论人昵称
+
+    createdate = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title

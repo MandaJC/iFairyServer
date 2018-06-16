@@ -1,28 +1,32 @@
-from Article.models import Article, Like, Collect
+from Article.models import Article, Like, Collect, Comment
+from regNlog.models import Person
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import HttpResponse
 from rest_framework import generics
-from .serializers import ArticleSerializer
+from .serializers import ArticleSerializer, CollectSerializer
 from django.core.exceptions import ObjectDoesNotExist
 
-# class PartyList(generics.ListCreateAPIView):
-#     queryset = Article.objects.all()
-#     serializer_class = ArticleSerializer
-#
-# class PartyDetail(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Article.objects.all()
-#     serializer_class = ArticleSerializer
+class CollectArticleList(APIView):#获取收藏列表
+    def post(self, request, format=None):
+        collectuser = request.POST.get('collectuser')
+        b = Collect.objects.get(collectuser=collectuser)
+        data=b.article.all()
+        serializer = ArticleSerializer(data, many=True)
+        return Response(serializer.data)
 
-# def changeHeadImg(request):
-    # article = Article.objects.filter(username=request.POST.get('username')).update(userphoto=request.FILES.get('userphoto'))
-    # return HttpResponse("头像修改成功")
-
-# def changeNickName(request):
-    # article = Article.objects.filter(username=request.POST.get('username')).update(nickname=request.POST.get('nickname'))
-    # return HttpResponse("昵称修改成功")
+class MyArticleList(APIView):#获取收藏列表
+    # def get(self, request, format=None):
+    #     articles = Article.objects.all().order_by("-createdate")
+    #     serializer = ArticleSerializer(articles, many=True)
+    #     return Response(serializer.data)
+    def post(self, request, format=None):
+        username = request.POST.get('username')
+        data = Article.objects.filter(username=username)
+        serializer = ArticleSerializer(data, many=True)
+        return Response(serializer.data)
 
 def isLike(request):#是否已赞
     articleId = int(request.POST.get('articleId'))
@@ -38,12 +42,15 @@ def isLike(request):#是否已赞
 
 def isCollect(request):#是否已收藏
     articleId =int(request.POST.get('articleId'))
-    title =request.POST.get('title')
-    username =request.POST.get('username')
     collectuser =request.POST.get('collectuser')
-    user = Collect.objects.filter(articleId = articleId,collectuser=collectuser)
-    if len(user)>0:
-        return HttpResponse("已收藏")
+    user = Collect.objects.filter(collectuser=collectuser)
+    if user.count()>0:
+        # user = Collect.objects.get(collectuser=collectuser)
+        test=user[0].article.all().filter(pk=articleId)
+        if test.count()>0:
+            return HttpResponse("已收藏")
+        else:
+            return HttpResponse("未收藏")
     else:
         return HttpResponse("未收藏")
 
@@ -61,14 +68,15 @@ def setLike(request):#增加赞
 
 def setCollect(request):#增加收藏
     articleId =int(request.POST.get('articleId'))
-    title =request.POST.get('title')
-    username =request.POST.get('username')
     collectuser =request.POST.get('collectuser')
-    user = Collect.objects.filter(articleId=articleId, collectuser=collectuser)
+    a=Article.objects.get(pk=articleId)
+    user = Collect.objects.filter(collectuser=collectuser)
     if len(user) == 0:#避免误增
-        Collect.objects.create(articleId=articleId, title=title,username = username, collectuser=collectuser)
-        number = Article.objects.get(pk = articleId).collectnum
-        Article.objects.filter(pk = articleId).update(collectnum=number+1)
+        Collect.objects.create(collectuser=collectuser)
+    b=Collect.objects.get(collectuser=collectuser)
+    b.article.add(a)
+    number = a.collect_article.count()#反向查询
+    Article.objects.filter(pk = articleId).update(collectnum=number)
     return HttpResponse("收藏成功")
 
 class ArticleTagListId(APIView):
@@ -85,10 +93,22 @@ class ArticleList(APIView):
         serializer = ArticleSerializer(articles, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
-        serializer = ArticleSerializer(data=request.data)
+    def post(self, request, format=None):#有毒，这个不能单独修改一个属性，大概要用数据库的级联操作吧，以后再测试，先暴力全改
+        data = request.data
+        # data2 = Article(data, )
+        username = request.POST.get('username')
+        nickname = Person.objects.get(username=username).nickname
+        userphoto = Person.objects.get(username=username).userphoto
+        serializer = ArticleSerializer(data=data)
+        # serializer = serializer.update(serializer.instance, nickname)
+        # serializer['nickname'] =
         if serializer.is_valid():
             serializer.save()
+            Article.objects.filter(username=username).update(nickname=nickname)
+            Article.objects.filter(username=username).update(userphoto=userphoto)
+            Like.objects.filter(username=username).update(nickname=nickname)
+            # Collect.objects.filter(username=username).update(nickname=nickname)
+            Comment.objects.filter(username=username).update(nickname=nickname)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

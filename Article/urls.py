@@ -16,5 +16,9 @@ urlpatterns = [
     path('list/', views.ArticleList.as_view()),#get获取文章列表，post新增文章
     path('detail/<int:pk>', views.ArticleDetail.as_view()),#get获取指定文章，post修改文章内容
 
-    path('tag/', views.ArticleTagListId.as_view())#按搜索输入的tag索引文章列表
+    path('tag/', views.ArticleTagListId.as_view()),#按搜索输入的tag索引文章列表
+
+    path('collectarticlelist/', views.CollectArticleList.as_view()),#获取收藏文章列表
+    path('myarticlelist/', views.MyArticleList.as_view()),#获取收藏文章列表
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

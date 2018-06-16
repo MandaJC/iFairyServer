@@ -8,6 +8,7 @@ class Person(models.Model):
     password = models.CharField(max_length=50)
     nickname = models.CharField(max_length=30, default="匿名用户")
     userphoto = models.ImageField(upload_to='imgs', default='images/q1.png')
+    follow = models.ManyToManyField(Person, related_name='collect_article')
     # img = models.ImageField(upload_to='img')
 
     def __str__(self):
@@ -19,6 +20,7 @@ class Follow(models.Model):
     nickname = models.CharField(max_length=30, default="匿名用户")
     userphoto = models.ImageField(upload_to='imgs', default='images/q1.png')
     followusername = models.CharField(max_length=30)#自己
+    person = models.ManyToManyField(Person, related_name='collect_article')
     # img = models.ImageField(upload_to='img')
 
     def __str__(self):

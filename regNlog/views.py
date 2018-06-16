@@ -17,17 +17,18 @@ from django.core.files.base import ContentFile
 from django.conf import settings
 import os
 
-from Article.models import Article
+from Article.models import Article, Like, Comment, Collect
 # Create your views here.
 #注册
 def register(request):
     request.encoding = 'utf-8'
     username = request.POST.get('username')
+    nickname = request.POST.get('nickname')
     password = request.POST.get('password')
     try:
         person = Person.objects.get(username=username)
     except ObjectDoesNotExist:
-        Person.objects.create(username=username, password=password)
+        Person.objects.create(username=username, password=password, nickname=nickname)
         return HttpResponse("注册成功")
     else:
         return HttpResponse("用户名重复")
@@ -67,14 +68,23 @@ def changeHeadImg(request):
     image = request.FILES.get('userphoto')
     path=default_storage.save('imgs/'+image.name, ContentFile(image.read()))
     tmp_file = os.path.join(settings.MEDIA_ROOT, path)
-    article = Article.objects.filter(username=request.POST.get('username')).update(
-        userphoto=request.FILES.get('userphoto'))
+    username=request.POST.get('username')
+    userphoto = request.FILES.get('userphoto')
+    # article =
+    Article.objects.filter(username=username).update(userphoto=userphoto)
+    # Like.objects.filter(username=username).update(userphoto=userphoto)
+    # Collect.objects.filter(username=username).update(userphoto=userphoto)
+    # Comment.objects.filter(username=username).update(userphoto=userphoto)
     return HttpResponse("头像修改成功"+ str(image.size))
 
 def changeNickName(request):
-    person = Person.objects.filter(username=request.POST.get('username')).update(nickname=request.POST.get('nickname'))
-    article = Article.objects.filter(username=request.POST.get('username')).update(
-        nickname=request.POST.get('nickname'))
+    username=request.POST.get('username')
+    nickname=request.POST.get('nickname')
+    Person.objects.filter(username=username).update(nickname=nickname)
+    Article.objects.filter(username=username).update(nickname=nickname)
+    Like.objects.filter(username=username).update(nickname=nickname)
+    # Collect.objects.filter(username=username).update(nickname=nickname)
+    Comment.objects.filter(username=username).update(nickname=nickname)
     return HttpResponse("昵称修改成功")
 
 class PersonList(APIView):
