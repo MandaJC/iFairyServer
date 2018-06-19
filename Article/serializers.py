@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Article, Collect
+from .models import Article, Collect, Comment
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -16,3 +16,8 @@ class CollectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Collect
         fields = ('id', 'collectuser')
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ('id','articleId','comment','commentuser','userphoto','nickname','createdate')

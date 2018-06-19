@@ -21,4 +21,12 @@ urlpatterns = [
     path('collectarticlelist/', views.CollectArticleList.as_view()),#获取收藏文章列表
     path('myarticlelist/', views.MyArticleList.as_view()),#获取收藏文章列表
 
+    path('commentpost/', views.CommentPost),#发表评论
+    path('commentlist/', views.CommentList.as_view()),#获取收藏文章列表
+
+    path('followuserarticlelist/', views.FollowUserArticleList.as_view()),  # 获取关注用户文章列表
+    path('setfollow/', views.setFollow),  # 添加关注用户
+
+    path('selfinfo/', views.selfInfo),  # 获取个人信息
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

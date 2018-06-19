@@ -4,10 +4,74 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework import generics
-from .serializers import ArticleSerializer, CollectSerializer
+from .serializers import ArticleSerializer, CommentSerializer
 from django.core.exceptions import ObjectDoesNotExist
+
+def selfInfo(request):
+    username = request.POST.get('username')
+    user = Person.objects.get(username=username)
+    fansnum = user.fans.count()
+    follownum = user.follow.count()
+    collect = Collect.objects.get(collectuser=username)
+    collectnum =collect.article.count()
+    articlenum = Article.objects.filter(username=username).count()
+    headimg = user.userphoto.name
+    nickname = user.nickname
+    return JsonResponse({"fansnum":fansnum, "follownum":follownum, "collectnum":collectnum, "articlenum":articlenum, "nickname":nickname, "headimg":headimg})
+
+
+def setFollow(request):
+    followuser = request.POST.get('username')
+    fansuser = request.POST.get('fansuser')#客户端登录用户
+    follow = Person.objects.get(username=followuser)
+    fans = Person.objects.get(username=fansuser)
+    fans.follow.add(follow)
+    return HttpResponse("关注成功")
+
+class FollowUserArticleList(APIView):#获取收藏列表
+    def post(self, request, format=None):
+        username = request.POST.get('username')
+        fans = Person.objects.get(username=username)
+        totalfollow = fans.follow.all()
+        list=[]
+        for i in totalfollow:
+            list.append(Article.objects.filter(username=i.username))
+        outset = list[0]
+        for i in list:
+            outset = outset | i
+        outset = outset.distinct()
+        serializer = ArticleSerializer(outset, many=True)
+        return Response(serializer.data)
+
+class CommentList(APIView):#获取收藏列表
+    def post(self, request, format=None):
+        articleId = int(request.POST.get('articleId'))
+        comments = Comment.objects.filter(articleId=articleId).order_by("-createdate")
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
+def CommentPost(request):  # 获取收藏列表
+    # def post(self, request, format=None):#有毒，这个不能单独修改一个属性，大概要用数据库的级联操作吧，以后再测试，先暴力全改
+        # data = request.data#含articleId和comment
+        commentuser = request.POST.get('commentuser')
+        articleId = int(request.POST.get('articleId'))
+        # return HttpResponse(articleId)
+        comment = request.POST.get('comment')
+        nickname = Person.objects.get(username=commentuser).nickname
+        userphoto = Person.objects.get(username=commentuser).userphoto
+        Comment.objects.create(articleId=articleId, commentuser=commentuser, comment=comment,nickname=nickname,userphoto=userphoto)
+        return HttpResponse("发表评论成功")
+
+        # serializer = CommentSerializer(data=data)
+        # if serializer.is_valid():
+        #     serializer.save()
+        #     Comment.objects.filter(commentuser=commentuser).update(nickname=nickname)
+        #     Comment.objects.filter(commentuser=commentuser).update(userphoto=userphoto)
+        #     # return Response(serializer.data, status=status.HTTP_201_CREATED)
+        #     return HttpResponse("发表评论成功")
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CollectArticleList(APIView):#获取收藏列表
     def post(self, request, format=None):
@@ -108,7 +172,8 @@ class ArticleList(APIView):
             Article.objects.filter(username=username).update(userphoto=userphoto)
             Like.objects.filter(username=username).update(nickname=nickname)
             # Collect.objects.filter(username=username).update(nickname=nickname)
-            Comment.objects.filter(username=username).update(nickname=nickname)
+            Comment.objects.filter(commentuser=username).update(nickname=nickname)
+            Comment.objects.filter(commentuser=username).update(userphoto=userphoto)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

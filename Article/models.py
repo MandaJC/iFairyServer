@@ -5,9 +5,9 @@ class Article(models.Model):
     title = models.CharField(max_length=50, default="未命名")
     content = models.TextField(default="文档待编辑...")#点击后才会显示
 
-    tag = models.CharField(max_length=50, default="mandajc￥")
-    tag2 = models.CharField(max_length=50, default="mandajc￥")
-    tag3 = models.CharField(max_length=50, default="mandajc￥")
+    tag = models.CharField(max_length=50, null=True, blank=True)
+    tag2 = models.CharField(max_length=50, null=True, blank=True)
+    tag3 = models.CharField(max_length=50, null=True, blank=True)
     relative = models.CharField(max_length=50, default="#")
 
     likenum = models.IntegerField(default=0)
@@ -16,14 +16,17 @@ class Article(models.Model):
     username = models.CharField(max_length=30, default='user')
     nickname = models.CharField(max_length=30, default='匿名')
 
-    userphoto = models.ImageField(upload_to="imgs", default='images/q1.png')
-    photo1 = models.ImageField(upload_to='imgs', default='images/q1.png')
-    photo2 = models.ImageField(upload_to='imgs', default='images/q1.png')
-    photo3 = models.ImageField(upload_to='imgs', default='images/q1.png')
+    userphoto = models.ImageField(upload_to="imgs", default='imgs/q1.png')
+    photo1 = models.ImageField(upload_to='imgs', default='imgs/q1.png')
+    photo2 = models.ImageField(upload_to='imgs', default='imgs/q1.png')
+    photo3 = models.ImageField(upload_to='imgs', default='imgs/q1.png')
     createdate = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering=['-createdate']
 
 
 class Like(models.Model):#点赞名单
@@ -57,15 +60,16 @@ class Collect(models.Model):#收藏名单 #没有头像
 
 class Comment(models.Model):
     articleId = models.IntegerField(default=0)  # id是从1开始的
-    # title = models.CharField(max_length=50, default="未命名")
-    # username = models.CharField(max_length=30, default='user')
-
     comment = models.TextField(default="评论待编辑...")#评论内容
-    userphoto = models.ImageField(upload_to="imgs", default='images/q1.png')#评论人头像
     commentuser = models.CharField(max_length=30, default='user')#评论人名字
-    nickname = models.CharField(max_length=30, default='匿名')#评论人昵称
 
     createdate = models.DateTimeField(default=timezone.now)
 
+    userphoto = models.ImageField(upload_to="imgs", default='images/q1.png')#评论人头像
+    nickname = models.CharField(max_length=30, default='匿名')#评论人昵称
+
+    # title = models.CharField(max_length=50, default="未命名")
+    # username = models.CharField(max_length=30, default='user')
+
     def __str__(self):
-        return self.title
+        return self.articleId

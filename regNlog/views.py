@@ -64,18 +64,15 @@ def changePassword(request):
     return HttpResponse("密码修改成功")
 
 def changeHeadImg(request):
-    person = Person.objects.filter(username=request.POST.get('username')).update(userphoto=request.FILES.get('userphoto'))
-    image = request.FILES.get('userphoto')
-    path=default_storage.save('imgs/'+image.name, ContentFile(image.read()))
-    tmp_file = os.path.join(settings.MEDIA_ROOT, path)
     username=request.POST.get('username')
     userphoto = request.FILES.get('userphoto')
-    # article =
+    path=default_storage.save('imgs/'+userphoto.name, ContentFile(userphoto.read()))
+    tmp_file = os.path.join(settings.MEDIA_ROOT, path)
+    person = Person.objects.filter(username=username).update(userphoto=path)
     Article.objects.filter(username=username).update(userphoto=userphoto)
-    # Like.objects.filter(username=username).update(userphoto=userphoto)
-    # Collect.objects.filter(username=username).update(userphoto=userphoto)
-    # Comment.objects.filter(username=username).update(userphoto=userphoto)
-    return HttpResponse("头像修改成功"+ str(image.size))
+    Comment.objects.filter(commentuser=username).update(userphoto=userphoto)
+    # return HttpResponse(path)
+    return HttpResponse("头像修改成功")
 
 def changeNickName(request):
     username=request.POST.get('username')
@@ -84,7 +81,7 @@ def changeNickName(request):
     Article.objects.filter(username=username).update(nickname=nickname)
     Like.objects.filter(username=username).update(nickname=nickname)
     # Collect.objects.filter(username=username).update(nickname=nickname)
-    Comment.objects.filter(username=username).update(nickname=nickname)
+    Comment.objects.filter(commentuser=username).update(nickname=nickname)
     return HttpResponse("昵称修改成功")
 
 class PersonList(APIView):

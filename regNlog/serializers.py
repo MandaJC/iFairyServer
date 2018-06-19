@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Person, Follow
+from .models import Person
 
 
 class PersonSerializer(serializers.ModelSerializer):
@@ -7,7 +7,7 @@ class PersonSerializer(serializers.ModelSerializer):
         model = Person
         fields = ('id', 'username', 'password', 'nickname', 'userphoto')
 
-class FollowSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Follow
-        fields = ('id', 'username', 'nickname', 'userphoto', 'followusername')
+# class FollowSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Follow
+#         fields = ('id', 'username', 'nickname', 'userphoto', 'followusername')
