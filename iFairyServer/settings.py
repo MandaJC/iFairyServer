@@ -11,10 +11,43 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import qiniu
 
+QINIU_ACCESS_KEY='0jScFLqK3lAuyrxrszk4LiZ6H_iXsRMi03NL-I5-'
+QINIU_SECRET_KEY='802q-qCQX4VCMrylVvEM2OVWd56sAvbCVDyI9Wuq'
+QINIU_BUCKET_NAME='mandajc'
+QINIU_BUCKET_DOMAIN='papfvr9g2.bkt.clouddn.com'
+QINIU_SECURE_URL = False      #使用http
+PREFIX_URL = 'http://'
+#参考，按照上面的复制即可https://blog.csdn.net/twilight041132/article/details/50570807
+# ROOT_URL = '/'
+# MEDIA_URL = ROOT_URL + 'res/images/'
+#Media
+MEDIA_ROOT = '/res/images/'
+MEDIA_URL = PREFIX_URL + QINIU_BUCKET_DOMAIN + '/res/images/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+DEFAULT_FILE_STORAGE = 'qiniustorage.backends.QiniuMediaStorage'
+#静态文件
+# STATIC_URL = QINIU_BUCKET_DOMAIN + '/static/'
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),
+# ]
+STATIC_ROOT = BASE_DIR + '/res/static/'
+STATIC_URL = QINIU_BUCKET_DOMAIN + '/static/'
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'res/'),
+# )
+# STATIC_ROOT = os.path.join(BASE_DIR, 'res/images')
+STATICFILES_STORAGE = 'qiniustorage.backends.QiniuStaticStorage'
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+   'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -25,7 +58,7 @@ SECRET_KEY = 'dbwgwyu*1qzou1$*3cd3+p4+gciq-**09zex-&xxc+ij_ud899'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.19.127.34', '10.0.2.2', '192.168.199.209', '172.19.89.99', '127.0.0.1']
+ALLOWED_HOSTS = ['172.19.127.34', '10.0.2.2', '192.168.199.209', '172.19.89.112', '127.0.0.1','mandajc.xicp.io']
 
 
 # Application definition
@@ -40,7 +73,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'regNlog',
     'Article',
-    'Column'
+    'Column',
 ]
 
 MIDDLEWARE = [
@@ -126,17 +159,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
-
 #api访问图片的关键！！！
 #参考，按照上面的复制即可https://blog.csdn.net/twilight041132/article/details/50570807
-MEDIA_ROOT = BASE_DIR + '/res/images/'
-ROOT_URL = '/'
-MEDIA_URL = ROOT_URL + 'res/images/'
-STATIC_URL = '/res/'
-
-STATICFILES_DIRS = (
-os.path.join(BASE_DIR, 'res'),
-)
+# MEDIA_ROOT = BASE_DIR + '/res/images/'
+# ROOT_URL = '/'
+# MEDIA_URL = ROOT_URL + 'res/images/'
+# STATIC_URL = '/res/'
+# STATICFILES_DIRS = (
+# os.path.join(BASE_DIR, 'res'),
+# )

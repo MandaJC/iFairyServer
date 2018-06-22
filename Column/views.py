@@ -12,8 +12,8 @@ from django.core.exceptions import ObjectDoesNotExist
 def isLike(request):#是否已赞
     columnId = int(request.POST.get('columnId'))
     print(columnId)
-    title = request.POST.get('title')
-    username = request.POST.get('username')
+    # title = request.POST.get('title')
+    # username = request.POST.get('username')
     likeuser = request.POST.get('likeuser')
     user = Like.objects.filter(columnId = columnId,likeuser=likeuser)
     if len(user)>0:
@@ -44,7 +44,7 @@ def setLike(request):#增加赞
         Column.objects.filter(pk = columnId).update(likenum=number+1)
     return HttpResponse("点赞成功")
 
-def setDislike(request):#增加收藏
+def setDislike(request):#增加拔草
     columnId =int(request.POST.get('columnId'))
     title =request.POST.get('title')
     username =request.POST.get('username')

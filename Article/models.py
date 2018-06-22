@@ -16,10 +16,10 @@ class Article(models.Model):
     username = models.CharField(max_length=30, default='user')
     nickname = models.CharField(max_length=30, default='匿名')
 
-    userphoto = models.ImageField(upload_to="imgs", default='imgs/q1.png')
-    photo1 = models.ImageField(upload_to='imgs', default='imgs/q1.png')
-    photo2 = models.ImageField(upload_to='imgs', default='imgs/q1.png')
-    photo3 = models.ImageField(upload_to='imgs', default='imgs/q1.png')
+    userphoto = models.ImageField( default='q1.png')
+    photo1 = models.ImageField(default='q1.png')
+    photo2 = models.ImageField(default='q1.png')
+    photo3 = models.ImageField(default='q1.png')
     createdate = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -65,7 +65,7 @@ class Comment(models.Model):
 
     createdate = models.DateTimeField(default=timezone.now)
 
-    userphoto = models.ImageField(upload_to="imgs", default='images/q1.png')#评论人头像
+    userphoto = models.ImageField(default='images/q1.png')#评论人头像
     nickname = models.CharField(max_length=30, default='匿名')#评论人昵称
 
     # title = models.CharField(max_length=50, default="未命名")

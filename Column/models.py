@@ -12,8 +12,8 @@ class Column(models.Model):#后台编辑
     dislikenum = models.IntegerField(default=0)
     username = models.CharField(max_length=30, default='user')
     nickname = models.CharField(max_length=30, default='匿名')
-    userphoto = models.ImageField(upload_to="imgs", default='imgs/q1.png')
-    photo1 = models.ImageField(upload_to='imgs', default='imgs/q1.png')
+    userphoto = models.ImageField(default='q1.png')
+    photo1 = models.ImageField(default='q1.png')
 
     def __str__(self):
         return self.title

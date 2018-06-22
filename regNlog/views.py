@@ -66,7 +66,7 @@ def changePassword(request):
 def changeHeadImg(request):
     username=request.POST.get('username')
     userphoto = request.FILES.get('userphoto')
-    path=default_storage.save('imgs/'+userphoto.name, ContentFile(userphoto.read()))
+    path=default_storage.save(userphoto.name, ContentFile(userphoto.read()))
     tmp_file = os.path.join(settings.MEDIA_ROOT, path)
     person = Person.objects.filter(username=username).update(userphoto=path)
     Article.objects.filter(username=username).update(userphoto=userphoto)

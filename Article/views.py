@@ -14,10 +14,14 @@ def selfInfo(request):
     user = Person.objects.get(username=username)
     fansnum = user.fans.count()
     follownum = user.follow.count()
-    collect = Collect.objects.get(collectuser=username)
-    collectnum =collect.article.count()
+    try:
+        collect = Collect.objects.get(collectuser=username)
+    except Collect.DoesNotExist:
+        collectnum = 0
+    else:
+        collectnum =collect.article.count()
     articlenum = Article.objects.filter(username=username).count()
-    headimg = user.userphoto.name
+    headimg = user.userphoto.url
     nickname = user.nickname
     return JsonResponse({"fansnum":fansnum, "follownum":follownum, "collectnum":collectnum, "articlenum":articlenum, "nickname":nickname, "headimg":headimg})
 
@@ -76,10 +80,13 @@ def CommentPost(request):  # 获取收藏列表
 class CollectArticleList(APIView):#获取收藏列表
     def post(self, request, format=None):
         collectuser = request.POST.get('collectuser')
-        b = Collect.objects.get(collectuser=collectuser)
-        data=b.article.all()
-        serializer = ArticleSerializer(data, many=True)
-        return Response(serializer.data)
+        try:
+            b = Collect.objects.get(collectuser=collectuser)
+            data=b.article.all()
+            serializer = ArticleSerializer(data, many=True)
+            return Response(serializer.data)
+        except Collect.DoesNotExist:
+            raise Http404
 
 class MyArticleList(APIView):#获取收藏列表
     # def get(self, request, format=None):
@@ -95,8 +102,8 @@ class MyArticleList(APIView):#获取收藏列表
 def isLike(request):#是否已赞
     articleId = int(request.POST.get('articleId'))
     print(articleId)
-    title = request.POST.get('title')
-    username = request.POST.get('username')
+    # title = request.POST.get('title')
+    # username = request.POST.get('username')
     likeuser = request.POST.get('likeuser')
     user = Like.objects.filter(articleId = articleId,likeuser=likeuser)
     if len(user)>0:
@@ -145,7 +152,11 @@ def setCollect(request):#增加收藏
 
 class ArticleTagListId(APIView):
     def post(self, request, format=None):
-        articles = Article.objects.filter(tag=request.POST.get('tag'))#.values('id')
+        articles1 = Article.objects.filter(tag=request.POST.get('tag'))#.values('id')
+        articles2 = Article.objects.filter(tag2=request.POST.get('tag'))  # .values('id')
+        articles3 = Article.objects.filter(tag3=request.POST.get('tag'))  # .values('id')
+        articles = articles1 | articles2 | articles3
+        articles = articles.distinct()
         serializer = ArticleSerializer(articles, many=True)
         if(articles.count()==0):
             return HttpResponse("Tag不存在")
