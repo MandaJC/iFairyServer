@@ -62,7 +62,7 @@ SECRET_KEY = 'dbwgwyu*1qzou1$*3cd3+p4+gciq-**09zex-&xxc+ij_ud899'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['203.195.206.214', '10.0.2.2', '192.168.199.209', '172.19.89.112', '127.0.0.1','mandajc.xicp.io']
+ALLOWED_HOSTS = ['203.195.206.214', '192.168.1.104', '192.168.199.209', '172.19.89.112', '127.0.0.1','mandajc.xicp.io']
 
 
 # Application definition

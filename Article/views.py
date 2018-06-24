@@ -171,6 +171,7 @@ class ArticleList(APIView):
     def post(self, request, format=None):#有毒，这个不能单独修改一个属性，大概要用数据库的级联操作吧，以后再测试，先暴力全改
         data = request.data
         # data2 = Article(data, )
+        # print(type(request.FILES.get('photo1')))
         username = request.POST.get('username')
         nickname = Person.objects.get(username=username).nickname
         userphoto = Person.objects.get(username=username).userphoto
