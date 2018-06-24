@@ -5,7 +5,7 @@
     修改restframework下renderers.py的JSONRenderer类中charset = 'utf-8'
     本地启动：python manage.py runserver 本地ip:8000
     手机要连同一路由器，安卓中HTTPPath的IP改为本地IP
-    云端：已实现，安卓中IP为云端IP，不需要进行任何修改
+    云端：已实现，项目部署在腾讯云，图片部署在七牛云，安卓中IP也预设为为云端IP，不需要进行任何修改
     有问题请联系：
     QQ：781913861
     邮箱：lyzwjaa@163.com
