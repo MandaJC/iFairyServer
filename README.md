@@ -1,5 +1,6 @@
 # iFairyServer
     iFairy的后台
+    github地址：https://github.com/MandaJC/iFairyServer
     pip配置：django、pillow、django、djangorestframework、markdown、django-filter、pymysql、django-qiniu-storage
     修改restframework下renderers.py的JSONRenderer类中charset = 'utf-8'
     本地启动：python manage.py runserver 本地ip:8000
